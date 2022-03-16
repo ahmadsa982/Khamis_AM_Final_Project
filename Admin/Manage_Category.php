@@ -1,41 +1,75 @@
 <?php
-           include('Includes/Header.php')
-           ?>
+    ob_start();  //FOR STOP REPEATE THE ACTION WHEN WE REFRASH
+    include('Includes/Header.php');
+    require('Includes/Connection.php');
+    if(isset($_POST['submit'])){            //Creat
+        $Image_Name = $_FILES['img']['name'];
+        $tmp_Name   = $_FILES['img']['tmp_name'];
+        $Path       ='images/';
+        move_uploaded_file($tmp_Name,$Path.$Image_Name);
+
+        $Category_Name=$_POST['name'];
+               
+        $query   ="INSERT INTO category(Category_Name,Category_Image)
+        VALUES('$Category_Name','$Image_Name')";
+
+        mysqli_query($Conn,$query);
+        header("Location: Manage_Category.php");
+    }
+    if(isset($_POST['submit1'])){                   //Edit
+        $Image_Name = $_FILES['img']['name'];
+        $tmp_Name   = $_FILES['img']['tmp_name'];
+        $Path       ='images/';
+        move_uploaded_file($tmp_Name,$Path.$Image_Name);
+
+        $Category_Name=$_POST['name'];
+               
+        $query   ="UPDATE category SET Category_Name='$Category_Name',
+                                       Category_Image  ='$Image_Name'
+                                       WHERE Category_Id ={$_GET['id']}";
+        mysqli_query($Conn,$query);
+        header("Location: Manage_Category.php");
+    }
+    if(isset($_GET['id1'])){
+        $query ="DELETE FROM category WHERE Category_ID ={$_GET['id1']}";
+        $Result=mysqli_query($Conn,$query);
+        header("Location: Manage_Category.php");
+    }
+    if(isset($_GET['id'])){
+        $query ="SELECT * FROM category WHERE Category_ID ={$_GET['id']}";
+        $Result=mysqli_query($Conn,$query);
+        $cat =mysqli_fetch_assoc($Result);
+    }   
+      
+?>
 <div class="main-content">
                 <div class="section__content section__content--p30">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-lg-6"><!--FORM-->
                                 <div class="card">
-                                    <div class="card-header">Example Form</div>
+                                    <div class="card-header">Category Information</div>
                                     <div class="card-body card-block">
-                                        <form action="" method="post" class="">
+                                        <form action="" method="post" class="" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-user"></i>
-                                                    </div>
-                                                    <input type="text" id="username" name="username" placeholder="Username" class="form-control">
+                                                    <input type="text" id="name" name="name" placeholder="Category Name" class="form-control" value="<?php if(isset($_GET['id'])){echo $cat['Category_Name']; }?>">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-envelope"></i>
-                                                    </div>
-                                                    <input type="email" id="email" name="email" placeholder="Email" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="input-group">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-asterisk"></i>
-                                                    </div>
-                                                    <input type="password" id="password" name="password" placeholder="Password" class="form-control">
+                                                    <input type="file" id="img" name="img" placeholder="Category Image" class="form-control" value="<?php if(isset($_GET['id'])){echo $Image_Name; ?>"><img src="images/<?php echo $cat['Category_Image'];}?>" width='120px' hight='120px'>
                                                 </div>
                                             </div>
                                             <div class="form-actions form-group">
-                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                                                <?php
+                                                if (isset($_GET['id'])){
+                                                    echo '<button type="submit" name="submit1" value="Edit" class="btn btn-success btn-sm">Edit</button>';
+                                                }
+                                                else if (!isset($_GET['id'])){
+                                                    echo '<button type="submit" name="submit" value="Create" class="btn btn-success btn-sm">Create</button>';
+                                                }
+                                                   ?>
                                             </div>
                                         </form>
                                     </div>
@@ -46,79 +80,28 @@
                                     <table class="table table-borderless table-striped table-earning">
                                         <thead>
                                             <tr>
-                                                <th>date</th>
-                                                <th>order ID</th>
-                                                <th>name</th>
-                                                <th class="text-right">price</th>
-                                                <th class="text-right">quantity</th>
-                                                <th class="text-right">total</th>
+                                                <th>Category ID</th>
+                                                <th>Category Name</th>
+                                                <th>Category Image</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>2018-09-29 05:57</td>
-                                                <td>100398</td>
-                                                <td>iPhone X 64Gb Grey</td>
-                                                <td class="text-right">$999.00</td>
-                                                <td class="text-right">1</td>
-                                                <td class="text-right">$999.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-28 01:22</td>
-                                                <td>100397</td>
-                                                <td>Samsung S8 Black</td>
-                                                <td class="text-right">$756.00</td>
-                                                <td class="text-right">1</td>
-                                                <td class="text-right">$756.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-27 02:12</td>
-                                                <td>100396</td>
-                                                <td>Game Console Controller</td>
-                                                <td class="text-right">$22.00</td>
-                                                <td class="text-right">2</td>
-                                                <td class="text-right">$44.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-26 23:06</td>
-                                                <td>100395</td>
-                                                <td>iPhone X 256Gb Black</td>
-                                                <td class="text-right">$1199.00</td>
-                                                <td class="text-right">1</td>
-                                                <td class="text-right">$1199.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-25 19:03</td>
-                                                <td>100393</td>
-                                                <td>USB 3.0 Cable</td>
-                                                <td class="text-right">$10.00</td>
-                                                <td class="text-right">3</td>
-                                                <td class="text-right">$30.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-29 05:57</td>
-                                                <td>100392</td>
-                                                <td>Smartwatch 4.0 LTE Wifi</td>
-                                                <td class="text-right">$199.00</td>
-                                                <td class="text-right">6</td>
-                                                <td class="text-right">$1494.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-24 19:10</td>
-                                                <td>100391</td>
-                                                <td>Camera C430W 4k</td>
-                                                <td class="text-right">$699.00</td>
-                                                <td class="text-right">1</td>
-                                                <td class="text-right">$699.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2018-09-22 00:43</td>
-                                                <td>100393</td>
-                                                <td>USB 3.0 Cable</td>
-                                                <td class="text-right">$10.00</td>
-                                                <td class="text-right">3</td>
-                                                <td class="text-right">$30.00</td>
-                                            </tr>
+                                            <?php
+                                            $query_1="SELECT * FROM category";
+                                            $Result=mysqli_query($Conn,$query_1);
+                                            while($Category=mysqli_fetch_assoc($Result)){
+                                            echo "<tr>";
+                                            echo "<td>{$Category['Category_Id']}</td>";
+                                            echo "<td>{$Category['Category_Name']}</td>";
+                                            echo "<td><img src='images/{$Category['Category_Image']}' width='120' hight='120'></td>";
+                                            echo "<td><a href='Manage_Category.php?id={$Category['Category_Id']}'>Edit</a></td>";
+                                            echo "<td><a href='Manage_Category.php?id1={$Category['Category_Id']}'>Delete</a></td>";
+                                            echo "</tr>";
+                                            }
+                                            ?>
+                                            
                                         </tbody>
                                     </table>
                                 </div>
@@ -130,18 +113,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 <?php
            include('Includes/Footer.php')
-           ?>
+?>

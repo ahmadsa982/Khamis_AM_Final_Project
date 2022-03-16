@@ -26,16 +26,17 @@
         mysqli_query($Conn,$query);
         header("Location: Manage_Admin.php");
     }
+    if(isset($_GET['id1'])){
+        $query ="DELETE FROM Admin WHERE Admin_ID ={$_GET['id1']}";
+        $Result=mysqli_query($Conn,$query);
+        header("Location: Manage_Admin.php");
+    }
     if(isset($_GET['id'])){
         $query ="SELECT * FROM Admin WHERE Admin_ID ={$_GET['id']}";
         $Result=mysqli_query($Conn,$query);
         $admin =mysqli_fetch_assoc($Result);
     }   
-    if(isset($_GET['id1'])){
-        $query ="DELETE * FROM Admin WHERE Admin_ID ={$_GET['id1']}";
-        $Result=mysqli_query($Conn,$query);
-        $admin =mysqli_fetch_assoc($Result);
-    }   
+      
 ?>
 <div class="main-content">
                 <div class="section__content section__content--p30">
