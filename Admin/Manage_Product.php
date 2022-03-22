@@ -2,30 +2,56 @@
     ob_start();  //FOR STOP REPEATE THE ACTION WHEN WE REFRASH
     include('Includes/Header.php');
     require('Includes/Connection.php');
-    if(isset($_POST['submit'])){
-        $Product_Image=$_FILES['img']['productname'];
-        $tmp_Name     =$_FILES['img']['tmp_name'];
-        $Path         ='images/';
-        move_uploaded_file($tmp_Name,$Path.$Product_Image);
+    if(isset($_POST['submit'])){            //Creat
+        $Image_Name = $_FILES['img']['name'];
+        $tmp_Name   = $_FILES['img']['tmp_name'];
+        $Path       ='images/';
+        move_uploaded_file($tmp_Name,$Path.$Image_Name);
 
-        $Product_Name =$_POST['productname'];
-        $Detalis =$_POST['detalis'];
-        $Price =$_POST['price'];
+        $prod_name =$_POST['name'];
+        $prod_details =$_POST['details'];
+        $prod_price =$_POST['price'];
+        $select =$_POST['select'];
+        $query="INSERT INTO product (Product_Name,Product_Image,Detalis,Price,Category_Id)
+        VALUES('$prod_name','$Image_Name','$prod_details','$prod_price','$select')";       
        
-        $Select =$_POST['select'];
+        mysqli_query($Conn,$query);
+        header("Location: Manage_Product.php");
+       
+        
+        
+    }
+    if(isset($_POST['submit1'])){                   //Edit
+        $Image_Name = $_FILES['img']['name'];
+        $tmp_Name   = $_FILES['img']['tmp_name'];
+        $Path       ='images/';
+        move_uploaded_file($tmp_Name,$Path.$Image_Name);
 
-               
-        $query   ="INSERT INTO product(Product_Name,Product_Image,Detalis,Price,Category_Id)
-        VALUES('$Product_Name','$Product_Image','$Detalis','$Price','$Select')";
+        $prod_name =$_POST['name'];
+        $prod_details =$_POST['details'];
+        $prod_price =$_POST['price'];
+        $select =$_POST['select'];
 
+        $query   ="UPDATE product SET   Product_Name='$prod_name',
+                                        Product_Image  ='$Image_Name',
+                                        Detalis= '$prod_details',
+                                        Price='$prod_price',
+                                        Category_Id='$select'
+                                       WHERE Product_Id ={$_GET['id']}";
         mysqli_query($Conn,$query);
         header("Location: Manage_Product.php");
     }
-    if(isset($_GET['id'])){
-        $query ="SELECT * FROM product WHERE Product_Id ={$_GET['id']}";
+    if(isset($_GET['id1'])){
+        $query ="DELETE FROM product WHERE Product_ID ={$_GET['id1']}";
         $Result=mysqli_query($Conn,$query);
-        $admin =mysqli_fetch_assoc($Result);
+        header("Location: Manage_Product.php");
+    }
+    if(isset($_GET['id'])){
+        $query ="SELECT * FROM product WHERE Product_ID ={$_GET['id']}";
+        $Result=mysqli_query($Conn,$query);
+        $cat =mysqli_fetch_assoc($Result);
     }   
+      
 ?>
 <div class="main-content">
                 <div class="section__content section__content--p30">
@@ -33,46 +59,41 @@
                         <div class="row">
                             <div class="col-lg-6"><!--FORM-->
                                 <div class="card">
-                                    <div class="card-header">Product Information</div>
+                                    <div class="card-header">Category Information</div>
                                     <div class="card-body card-block">
-                                        <form action="" method="post" class="" enctype="multipart/form-data"><!--enctype="multipart/form-data" for image form-->
+                                        <form action="" method="post" class="" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" id="productname" name="productname" placeholder="Product Name" class="form-control" value="<?php if(isset($_GET['id'])){echo $Product['Product_Name']; }?>">
+                                                    <input type="text" id="name" name="name" placeholder="Product Name" class="form-control" value="<?php if(isset($_GET['id'])){echo $product['Product_Name'];}?>">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="file" id="img" name="img" placeholder="Product Image" class="form-control" value="<?php if(isset($_GET['id'])){echo $Product_Name; ?>"><img src="images/<?php echo $Product['Product_Image'];}?>" width='120px' hight='120px' > 
+                                                    <input type="file" id="img" name="img" placeholder="Product Image" class="form-control" value="<?php if (isset($_GET['id'])) { echo $Image_Name; ?>" ><img src="images/<?php echo $product['Product_Image'];} ?>" >
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" id="details" name="details" placeholder="Product Details" class="form-control" value="<?php if(isset($_GET['id'])){echo $Product['Details']; }?>">
+                                                    <input type="text" id="details" name="details" placeholder="Product Details" class="form-control" value="<?php if (isset($_GET['id'])){echo $product['Detalis'];}?>" >
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="number" id="price" name="price" placeholder="Product Price" class="form-control" value="<?php if(isset($_GET['id'])){echo $Product['Price']; }?>">
+                                                    <input type="number" id="price" name="price" placeholder="Product Price" class="form-control" value="<?php if (isset($_GET['id'])){echo $product['Price'];}?>" >
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <select  type="text" name="select" class="form-control">
+                                                    <select name="select" type="text" class="form-control" value="<?php if (isset($_GET['id'])){echo $Categoryname['Category_Name'];}?>">
                                                         <?php
-                                                        $query="SELECT * FROM category WHERE Category_Id={$Pruduct['Category_Id']}";
-                                                        $result= mysqli_query($Conn,$query);
-                                                        $CatName=mysqli_fetch_assoc($result);
-                                                        echo "<option>";
-                                                        echo $CatName['Category_Name'];
-                                                        echo "</option>";
-                                                        $query2="SELECT * FROM category";
-                                                        $result2= mysqli_query($Conn,$query2);
-                                                        while($Cat=mysqli_fetch_assoc($result2)){
-                                                            if ($Pruduct['Category_Name'] != $CatName['Category_Id']) {
-                                                                echo "<option>".$Pruduct['Category_Name']."</option>";
-                                                            }  
-                                                        }
+                                                            $query4="SELECT * FROM category";
+                                                            $result4=mysqli_query($Conn,$query4);
+                                                            while($cat1=mysqli_fetch_assoc($result4)){
+                                                                echo"<option value='$cat1[Category_Id]'>";
+                                                                echo $cat1['Category_Name'];
+                                                                echo"</option>";
+                                                            
+                                                            }
                                                         ?>
                                                     </select>
                                                 </div>
@@ -85,6 +106,7 @@
                                                 else if (!isset($_GET['id'])){
                                                     echo '<button type="submit" name="submit" value="Create" class="btn btn-success btn-sm">Create</button>';
                                                 }
+
                                                    ?>
                                             </div>
                                         </form>
@@ -93,39 +115,38 @@
                             </div> 
                             <div class="col-lg-9"><!--TABLE-->
                                 <div class="table-responsive table--no-card m-b-30">
-                                    <table class="table table-borderless table-striped table-earning" >
+                                    <table class="table table-borderless table-striped table-earning">
                                         <thead>
                                             <tr>
                                                 <th>Product ID</th>
                                                 <th>Product Name</th>
                                                 <th>Product Image</th>
-                                                <th>Product Details</th>
-                                                <th>Product Price</th>
-                                                <th>Category Name</th>
+                                                <th>Product details</th>
+                                                <th>Product price</th>
+                                                <th>Category name</th>
                                                 <th>Edit</th>
                                                 <th>Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query="SELECT * FROM product";
-                                            $Result=mysqli_query($Conn,$query);
-                                            $query2="SELECT Category_Name FROM category
-                                            INNER JOIN product ON category.Category_Id=product.Category_Id";
-                                            $Result2=mysqli_query($Conn,$query2);
-                                            while($Pruduct=mysqli_fetch_assoc($Result)){
-                                                $CategoryName=mysqli_fetch_assoc($Result2);
-                                            echo "<tr>";
-                                            echo "<td>{$Pruduct['Pruduct_Id']}</td>";
-                                            echo "<td>{$Pruduct['Pruduct_Name']}</td>";
-                                            echo "<td><img src='images/{$Pruduct['Pruduct_Image']}' width='120' hight='120'></td>";
-                                            echo "<td>{$Pruduct['Detalis']}</td>";
-                                            echo "<td>{$Pruduct['Price']}</td>";
-                                            echo "<td>{$CategoryName['Category_Name']}</td>";
-                                            echo "<td><a href='Manage_Pruduct.php?id={$Pruduct['Pruduct_Id']}'>Edit</a></td>";
-                                            echo "<td><a href='Manage_Pruduct.php?id1={$Pruduct['Pruduct_Id']}'>Delete</a></td>";
-                                            echo "</tr>";
-                                            }
+                                                $qr="SELECT * FROM product";
+                                                $rs= mysqli_query($Conn,$qr);
+                                                $query2="SELECT Category_Name FROM category
+                                                INNER JOIN product ON Category.Category_Id = product.Category_Id ";
+                                                $result2= mysqli_query($Conn,$query2);
+                                                while($product= mysqli_fetch_assoc($rs)){
+                                                    $Categoryname= mysqli_fetch_assoc($result2);
+                                                    echo"<tr>";
+                                                    echo "<td>{$product['Product_Id']}</td>";
+                                                    echo "<td>{$product['Product_Name']}</td>";
+                                                    echo "<td><img src='images/{$product["Product_Image"]}' width='120' height='120'></td>";
+                                                    echo "<td>{$product['Detalis']}</td>";
+                                                    echo "<td>{$product['Price']}</td>";
+                                                    echo "<td>{$Categoryname['Category_Name']}</td>";
+                                                    echo "<td><a href='Manage_Product.php?id={$product['Product_Id']}'> Edit</a></td>";
+                                                    echo "<td><a href='Manage_Product.php?id1={$product['Product_Id']}'>Delete</a></td>";
+                                                    echo "</tr>"; }
                                             ?>
                                             
                                         </tbody>
@@ -137,6 +158,8 @@
                     </div>
                 </div>
 
+
+
 <?php
-           include('Includes/Footer.php');
-           ?>
+           include('Includes/Footer.php')
+?>
