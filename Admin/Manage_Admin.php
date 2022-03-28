@@ -4,7 +4,7 @@
     require('Includes/Connection.php');
     if(isset($_POST['submit'])){
         $fullname=$_POST['name'];
-        $email   =$_POST['Email'];
+        $email   =$_POST['email'];
         $password=$_POST['password'];
                
         $query   ="INSERT INTO Admin(Admin_Name,Email,Password)

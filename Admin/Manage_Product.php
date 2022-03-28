@@ -49,7 +49,7 @@
     if(isset($_GET['id'])){
         $query ="SELECT * FROM product WHERE Product_ID ={$_GET['id']}";
         $Result=mysqli_query($Conn,$query);
-        $cat =mysqli_fetch_assoc($Result);
+        $Product =mysqli_fetch_assoc($Result);
     }   
       
 ?>
@@ -61,25 +61,25 @@
                                 <div class="card">
                                     <div class="card-header">Category Information</div>
                                     <div class="card-body card-block">
-                                        <form action="" method="post" class="" enctype="multipart/form-data">
+                                        <form action="Manage_Product.php" method="post" class="" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" id="name" name="name" placeholder="Product Name" class="form-control" value="<?php if(isset($_GET['id'])){echo $product['Product_Name'];}?>">
+                                                    <input type="text" id="name" name="name" placeholder="Product Name" class="form-control" value="<?php if(isset($_GET['id'])){echo $Product['Product_Name']; }?>">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="file" id="img" name="img" placeholder="Product Image" class="form-control" value="<?php if (isset($_GET['id'])) { echo $Image_Name; ?>" ><img src="images/<?php echo $product['Product_Image'];} ?>" >
+                                                    <input type="file" id="img" name="img" placeholder="Product Image" class="form-control" value="<?php if (isset($_GET['id'])) {echo "C:/xampp/htdocs/Khamis_AM_Final_Project/Admin/images/"; echo $Product['Product_Image']; }?>"> <?php if (isset($_GET['id'])) { echo '<img width="120" height="120" src="images/'. $Product['Product_Image'].'"';} ?>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" id="details" name="details" placeholder="Product Details" class="form-control" value="<?php if (isset($_GET['id'])){echo $product['Detalis'];}?>" >
+                                                    <input type="text" id="details" name="details" placeholder="Product Details" class="form-control" value="<?php if (isset($_GET['id'])){echo $Product['Detalis'];}?>" >
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="number" id="price" name="price" placeholder="Product Price" class="form-control" value="<?php if (isset($_GET['id'])){echo $product['Price'];}?>" >
+                                                    <input type="number" id="price" name="price" placeholder="Product Price" class="form-control" value="<?php if (isset($_GET['id'])){echo $Product['Price'];}?>" >
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -135,17 +135,17 @@
                                                 $query2="SELECT Category_Name FROM category
                                                 INNER JOIN product ON Category.Category_Id = product.Category_Id ";
                                                 $result2= mysqli_query($Conn,$query2);
-                                                while($product= mysqli_fetch_assoc($rs)){
+                                                while($Product= mysqli_fetch_assoc($rs)){
                                                     $Categoryname= mysqli_fetch_assoc($result2);
                                                     echo"<tr>";
-                                                    echo "<td>{$product['Product_Id']}</td>";
-                                                    echo "<td>{$product['Product_Name']}</td>";
-                                                    echo "<td><img src='images/{$product["Product_Image"]}' width='120' height='120'></td>";
-                                                    echo "<td>{$product['Detalis']}</td>";
-                                                    echo "<td>{$product['Price']}</td>";
+                                                    echo "<td>{$Product['Product_Id']}</td>";
+                                                    echo "<td>{$Product['Product_Name']}</td>";
+                                                    echo "<td><img src='images/{$Product["Product_Image"]}' width='120' height='120'></td>";
+                                                    echo "<td>{$Product['Detalis']}</td>";
+                                                    echo "<td>{$Product['Price']}</td>";
                                                     echo "<td>{$Categoryname['Category_Name']}</td>";
-                                                    echo "<td><a href='Manage_Product.php?id={$product['Product_Id']}'> Edit</a></td>";
-                                                    echo "<td><a href='Manage_Product.php?id1={$product['Product_Id']}'>Delete</a></td>";
+                                                    echo "<td><a href='Manage_Product.php?id={$Product['Product_Id']}'> Edit</a></td>";
+                                                    echo "<td><a href='Manage_Product.php?id1={$Product['Product_Id']}'>Delete</a></td>";
                                                     echo "</tr>"; }
                                             ?>
                                             
